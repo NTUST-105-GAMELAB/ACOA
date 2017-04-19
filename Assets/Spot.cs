@@ -68,6 +68,6 @@ public class Spot : MonoBehaviour {
         //if (spotType == SPOT_TYPE.SPOT)
         //    this.GetComponent<MeshRenderer>().material.color = new Color(pheromone / 500, pheromone / 500, pheromone / 500);
         if (spotType == SPOT_TYPE.SPOT)
-            this.GetComponent<MeshRenderer>().material.color = new Color(pheromone1 / 10000, (pheromone1 + 0.5f * pheromone2) / 10000, (0.2f * pheromone1 + pheromone2) / 10000);
+            this.GetComponent<MeshRenderer>().material.color = new Color(pheromone1 / 1000, (pheromone1 + 0.5f * pheromone2) / 1000, (0.2f * pheromone1 + pheromone2) / 1000);
     }
 }

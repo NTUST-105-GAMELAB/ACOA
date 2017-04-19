@@ -23,16 +23,17 @@ public class ACOA : MonoBehaviour {
     bool running = false;
     readonly int countOfAnts = 30;
 
-    public static int mapSize = 20;
+    //public static int mapSize = 20;
+    public static int mapSize = 25;
+
+    string maze = "11101010101110111110101111011110100101010101110001110100110110000101001110011101110011101001011100010111010101001110010000101100110101101001011110010101101101101001011010000101100011111100011001101001101101110100111001101001000101011101100001001101100001010011111010011000011100010101110111001010100001101010001111111111111111111111111111";
 
     // Use this for initialization
     void Start() {
-
         ants = new List<Ant>();
 
-
-        int startX = 0;
-        int startY = 0;
+        int startX = 1;
+        int startY = 1;
 
         int stopX = Random.Range(10, mapSize);
         //int stopX = Random.Range(1, 10);
@@ -51,12 +52,25 @@ public class ACOA : MonoBehaviour {
             }
         }
 
-        for (int i = 0; i < 40; i++) {
-            map[Random.Range(1, mapSize)][Random.Range(1, mapSize)].spotType = Spot.SPOT_TYPE.WALL;
+        // Set wall blocks
+        int maze_k = 0;
+        for (int i = 0; i < mapSize; i += 2) {
+            for (int j = 0; j < mapSize; j += 2) {
+                map[j][mapSize - i - 1].spotType = Spot.SPOT_TYPE.WALL;
+                if (maze.Substring(maze_k, 1).Equals("1") && j + 1 < mapSize)
+                    map[j + 1][mapSize - i - 1].spotType = Spot.SPOT_TYPE.WALL;
+                if (maze.Substring(maze_k + 1, 1).Equals("1") && i + 1 < mapSize)
+                    map[j][mapSize - i - 2].spotType = Spot.SPOT_TYPE.WALL;
+                maze_k += 2;
+            }
         }
 
-        map[0][0].spotType = Spot.SPOT_TYPE.START;
-        map[13][13].spotType = Spot.SPOT_TYPE.STOP;
+        //for (int i = 0; i < 40; i++) {
+        //    map[Random.Range(1, mapSize)][Random.Range(1, mapSize)].spotType = Spot.SPOT_TYPE.WALL;
+        //}
+
+        map[startX][startY].spotType = Spot.SPOT_TYPE.START;
+        map[23][23].spotType = Spot.SPOT_TYPE.STOP;
 
         //creation ant
         for (int i = 0; i < countOfAnts; i++) {
