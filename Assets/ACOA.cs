@@ -18,7 +18,7 @@ public class ACOA : MonoBehaviour {
     //parameter
     public float alpha = 0;
     public float beta = 0;
-    float p = 0.993f;//保留綠
+    float p = 0.99f;//保留綠
     const float Q = 700f;//
     bool running = false;
     readonly int countOfAnts = 30;
@@ -62,8 +62,8 @@ public class ACOA : MonoBehaviour {
         for (int i = 0; i < countOfAnts; i++) {
             Ant ant = GameObject.Instantiate<Ant>(antPrefab);
             ant.gameObject.transform.SetParent(antsParrent.transform);
-            //ant.currentSpot = ant.prevSpot = map[startX][startY];
-            ant.currentSpot = ant.prevSpot = map[Random.Range(0, mapSize)][Random.Range(0, mapSize)];
+            ant.currentSpot = ant.prevSpot = map[startX][startY];
+            //ant.currentSpot = ant.prevSpot = map[Random.Range(0, mapSize)][Random.Range(0, mapSize)];
             ants.Add(ant);
         }
 
@@ -82,8 +82,10 @@ public class ACOA : MonoBehaviour {
             string phe = "";
             for (int i = 0; i < mapSize; i++) {
                 for (int j = 0; j < mapSize; j++) {
-                    map[i][j].pheromone = p * map[i][j].pheromone;
-                    phe += map[i][j].pheromone + "\t";
+                    map[i][j].pheromone1 = p * map[i][j].pheromone1;
+                    map[i][j].pheromone2 = p * map[i][j].pheromone2;
+                    phe += map[i][j].pheromone1 + "\t";
+                    phe += map[i][j].pheromone2 + "\t";
                 }
 
                 phe += "\n";
@@ -94,8 +96,9 @@ public class ACOA : MonoBehaviour {
             //Debug.Log((Q));
             foreach (Ant ant in ants) {
                 if (ant.getFood)
-                    ant.currentSpot.pheromone += 1.2f*(Q / (Mathf.Pow(ant.distance,1)));
-                ant.currentSpot.pheromone += (0.01f*(Q / (Mathf.Pow(ant.distance,2))));
+                    ant.currentSpot.pheromone2 += (Q / (Mathf.Pow(ant.distance, 1)));
+                else
+                    ant.currentSpot.pheromone1 += (Q / (Mathf.Pow(ant.distance, 1)));
 
             }
         }

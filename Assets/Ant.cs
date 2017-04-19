@@ -49,7 +49,8 @@ public class Ant : MonoBehaviour {
                     Spot nextSpot = ACOA.instance.map[xx][yy];//下一個移動的地點
                     if (nextSpot.spotType == Spot.SPOT_TYPE.WALL)
                         continue;
-                    if ((i * (x - prevPos.x) + j * (y - prevPos.y)) > 0.0f || currentSpot == prevSpot) {
+                    //if ((i * (x - prevPos.x) + j * (y - prevPos.y)) > 0.0f || currentSpot == prevSpot) {
+                    if (true) {
                         if (getFood == false) {
                             if (nextSpot.spotType == Spot.SPOT_TYPE.STOP) {
                                 prevSpot = nextSpot;
@@ -69,7 +70,10 @@ public class Ant : MonoBehaviour {
                             }
 
                         possibleSpot.Add(nextSpot);
-                        sum += ACOA.instance.map[xx][yy].pheromone + fixedPh;
+                        if (getFood)
+                            sum += ACOA.instance.map[xx][yy].pheromone1 + fixedPh;
+                        else
+                            sum += ACOA.instance.map[xx][yy].pheromone2 + fixedPh;
                         wheel.Add(sum);
                     }
                     else {
@@ -91,10 +95,10 @@ public class Ant : MonoBehaviour {
                     break;
                 }
             }
-            
+
             prevSpot = currentSpot;
             currentSpot = possibleSpot[i];
-            
+
         }
         else if (fallbackSpots.Count > 0) {
             Spot chosenSpot = fallbackSpots[Random.Range(0, fallbackSpots.Count)];
