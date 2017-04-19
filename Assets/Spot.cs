@@ -50,13 +50,14 @@ public class Spot : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        this.GetComponent<MeshRenderer>().material.color = Color.black;
-        if (spotType == SPOT_TYPE.START)
+		this.GetComponent<MeshRenderer>().material.color = Color.black;
+
+		if (spotType == SPOT_TYPE.START)
             this.GetComponent<MeshRenderer>().material.color = Color.blue;
         else if (spotType == SPOT_TYPE.STOP)
             this.GetComponent<MeshRenderer>().material.color = Color.yellow;
         else if (spotType == SPOT_TYPE.WALL)
-            this.GetComponent<MeshRenderer>().material.color = Color.green;
+            this.GetComponent<MeshRenderer>().material.color = Color.gray;
     }
 
     // Update is called once per frame
@@ -68,6 +69,6 @@ public class Spot : MonoBehaviour {
         //if (spotType == SPOT_TYPE.SPOT)
         //    this.GetComponent<MeshRenderer>().material.color = new Color(pheromone / 500, pheromone / 500, pheromone / 500);
         if (spotType == SPOT_TYPE.SPOT)
-            this.GetComponent<MeshRenderer>().material.color = new Color(pheromone1 / 1000, (pheromone1 + 0.5f * pheromone2) / 1000, (0.2f * pheromone1 + pheromone2) / 1000);
+            this.GetComponent<MeshRenderer>().material.color = new Color(pheromone2 / 1000, (pheromone2 + 0.5f * pheromone1) / 1000, (0.2f * pheromone2 + pheromone1) / 1000);
     }
 }
