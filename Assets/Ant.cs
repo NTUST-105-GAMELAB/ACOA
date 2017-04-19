@@ -2,7 +2,8 @@
 using UnityEngine;
 
 public class Ant : MonoBehaviour {
-    public float distance = 0;
+	public Texture2D Texture_ant;
+	public float distance = 0;
     public bool getFood = false;
     public Spot currentSpot;
     public Spot prevSpot;
@@ -12,17 +13,35 @@ public class Ant : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        this.GetComponent<MeshRenderer>().material.color = Color.red;
-    }
+		//this.GetComponent<MeshRenderer>().material.color = Color.red;
+		this.GetComponent<MeshRenderer>().material.mainTexture = Texture_ant;
+	}
 
     // Update is called once per frame
     void Update() {
         this.transform.position = currentSpot.transform.position + new Vector3(0, 0, -3);
-    }
+		//this.GetComponent<MeshRenderer>().material.mainTexture;
+	}
 
-    List<float> wheel = new List<float>();
+	List<float> wheel = new List<float>();
 
-    public void walk() {
+	void direction() {
+		if (prevSpot.transform.position.x - currentSpot.transform.position.x > 0) {
+			this.transform.rotation = Quaternion.Euler(0f, 0f, 270f);
+		}
+		if (prevSpot.transform.position.x - currentSpot.transform.position.x < 0) {
+			this.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+		}
+		if (prevSpot.transform.position.y - currentSpot.transform.position.y > 0) {
+			this.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+		}
+		if (prevSpot.transform.position.x - currentSpot.transform.position.x > 0) {
+			this.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+		}
+	}
+
+
+	public void walk() {
         wheel.Clear();
         possibleSpot.Clear();
         fallbackSpots.Clear();
@@ -115,6 +134,7 @@ public class Ant : MonoBehaviour {
 
         //Debug.Log(prevSpot.transform.position + "\t" + currentSpot.transform.position);
         distance += (currentSpot.transform.position - prevSpot.transform.position).magnitude;
-        //Debug.Log(distance);
-    }
+		//Debug.Log(distance);
+		direction();
+	}
 }
