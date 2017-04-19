@@ -11,6 +11,8 @@ public class Ant : MonoBehaviour {
     List<Spot> fallbackSpots = new List<Spot>();
     private float fixedPh = .0f;
 
+    float pheromone_power = 1.25f; /*** 費洛蒙影響力係數 ***/
+
     // Use this for initialization
     void Start() {
 		//this.GetComponent<MeshRenderer>().material.color = Color.red;
@@ -54,8 +56,9 @@ public class Ant : MonoBehaviour {
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
-                if (i == 0 && j == 0)
-                    continue;
+                // Remove oblique movements
+                if ((i + j) % 2 == 0) continue;
+
                 int xx = x + i;
                 int yy = y + j;
                 //if (xx >= 0 && yy >= 0 && xx < ACOA.mapSize && yy < ACOA.mapSize && !(xx == (int)prevPos.x && yy == (int)prevPos.y) && !(i == 0 && j == 0)) { 
@@ -90,9 +93,9 @@ public class Ant : MonoBehaviour {
 
                         possibleSpot.Add(nextSpot);
                         if (getFood)
-                            sum += ACOA.instance.map[xx][yy].pheromone1 + fixedPh;
+                            sum += Mathf.Pow(ACOA.instance.map[xx][yy].pheromone1, pheromone_power) + fixedPh;
                         else
-                            sum += ACOA.instance.map[xx][yy].pheromone2 + fixedPh;
+                            sum += Mathf.Pow(ACOA.instance.map[xx][yy].pheromone2, pheromone_power) + fixedPh;
                         wheel.Add(sum);
                     }
                     else {

@@ -18,15 +18,16 @@ public class ACOA : MonoBehaviour {
     //parameter
     public float alpha = 0;
     public float beta = 0;
-    float p = 0.99f;//保留綠
-    const float Q = 700f;//
+    float pheromone_vaporization = 0.97f; /*** 費洛蒙揮發係數 ***/
+    const float Q = 100f;
     bool running = false;
-    readonly int countOfAnts = 30;
+    readonly int countOfAnts = 100;
 
     //public static int mapSize = 20;
     public static int mapSize = 25;
 
     string maze = "11101010101110111110101111011110100101010101110001110100110110000101001110011101110011101001011100010111010101001110010000101100110101101001011110010101101101101001011010000101100011111100011001101001101101110100111001101001000101011101100001001101100001010011111010011000011100010101110111001010100001101010001111111111111111111111111111";
+    //string maze = "11101011101010101011101011011010011010111000001100110101011010010111100001101101011010010101101110100111111010010101100101101000110111000001110001110011101101101010010111000111000111110011010100011001101001110110010110100001111001001101010011101010111000100111011101011010010110110001110101001010000110000110001111111111111111111111111111";
 
     // Use this for initialization
     void Start() {
@@ -96,8 +97,8 @@ public class ACOA : MonoBehaviour {
             string phe = "";
             for (int i = 0; i < mapSize; i++) {
                 for (int j = 0; j < mapSize; j++) {
-                    map[i][j].pheromone1 = p * map[i][j].pheromone1;
-                    map[i][j].pheromone2 = p * map[i][j].pheromone2;
+                    map[i][j].pheromone1 = pheromone_vaporization * map[i][j].pheromone1;
+                    map[i][j].pheromone2 = pheromone_vaporization * map[i][j].pheromone2;
                     phe += map[i][j].pheromone1 + "\t";
                     phe += map[i][j].pheromone2 + "\t";
                 }
