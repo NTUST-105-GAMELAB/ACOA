@@ -11,12 +11,20 @@ public class Ant : MonoBehaviour {
     List<Spot> fallbackSpots = new List<Spot>();
     private float fixedPh = .0f;
 
-    float pheromone_power = 1.25f; /*** 費洛蒙影響力係數 ***/
+	private List<List<bool>> path = new List<List<bool>>();
+
+    float pheromone_power = 2.0f; /*** 費洛蒙影響力係數 ***/
 
     // Use this for initialization
     void Start() {
 		//this.GetComponent<MeshRenderer>().material.color = Color.red;
 		this.GetComponent<MeshRenderer>().material.mainTexture = Texture_ant;
+		for (int i = 0; i < ACOA.mapSize; i++) {
+			path.Add (new List<bool> ());
+			for (int j = 0; j < ACOA.mapSize; j++) {
+				path[i].Add (false);
+			}
+		}
 	}
 
     // Update is called once per frame
@@ -42,6 +50,13 @@ public class Ant : MonoBehaviour {
 		}
 	}
 
+	private void clearPath(){
+		for (int i = 0; i < ACOA.mapSize; i++) {
+			for (int j = 0; j < ACOA.mapSize; j++) {
+				path [i][j] = false;
+			}
+		}
+	}
 
 	public void walk() {
         wheel.Clear();
@@ -57,50 +72,56 @@ public class Ant : MonoBehaviour {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 // Remove oblique movements
-                if ((i + j) % 2 == 0) continue;
+                //if ((i + j) % 2 == 0) continue;
 
                 int xx = x + i;
                 int yy = y + j;
                 //if (xx >= 0 && yy >= 0 && xx < ACOA.mapSize && yy < ACOA.mapSize && !(xx == (int)prevPos.x && yy == (int)prevPos.y) && !(i == 0 && j == 0)) { 
                 //看周圍費洛蒙
 
-                if (xx == (int)prevPos.x && yy == (int)prevPos.y)//不往回走
-                    continue;
+//                if (xx == (int)prevPos.x && yy == (int)prevPos.y)//不往回走
+//                    continue;
 
                 if (xx >= 0 && yy >= 0 && xx < ACOA.mapSize && yy < ACOA.mapSize) {
                     Spot nextSpot = ACOA.instance.map[xx][yy];//下一個移動的地點
+
                     if (nextSpot.spotType == Spot.SPOT_TYPE.WALL)
                         continue;
-                    //if ((i * (x - prevPos.x) + j * (y - prevPos.y)) > 0.0f || currentSpot == prevSpot) {
-                    if (true) {
-                        if (getFood == false) {
-                            if (nextSpot.spotType == Spot.SPOT_TYPE.STOP) {
-                                prevSpot = nextSpot;
-                                currentSpot = nextSpot;
-                                getFood = true;
-                                distance = 0.0f;
-                                return;
-                            }
-                        }
-                        else if (getFood == true)
-                            if (nextSpot.spotType == Spot.SPOT_TYPE.START) {
-                                prevSpot = nextSpot;
-                                currentSpot = nextSpot;
-                                getFood = false;
-                                distance = 0.0f;
-                                return;
-                            }
 
-                        possibleSpot.Add(nextSpot);
-                        if (getFood)
-                            sum += Mathf.Pow(ACOA.instance.map[xx][yy].pheromone1, pheromone_power) + fixedPh;
-                        else
-                            sum += Mathf.Pow(ACOA.instance.map[xx][yy].pheromone2, pheromone_power) + fixedPh;
-                        wheel.Add(sum);
-                    }
-                    else {
-                        fallbackSpots.Add(nextSpot);
-                    }
+					if (path [xx] [yy] == true)
+						continue;
+
+					//if ((i * (x - prevPos.x) + j * (y - prevPos.y)) > 0.0f || currentSpot == prevSpot) 
+					{
+						if (getFood == false) {
+							if (nextSpot.spotType == Spot.SPOT_TYPE.STOP) {
+								clearPath ();
+
+								prevSpot = nextSpot;
+								currentSpot = nextSpot;
+								getFood = true;
+								distance = 0.0f;
+								return;
+							}
+						} else if (getFood == true) {
+							if (nextSpot.spotType == Spot.SPOT_TYPE.START) {
+								clearPath ();
+
+								prevSpot = nextSpot;
+								currentSpot = nextSpot;
+								getFood = false;
+								distance = 0.0f;
+								return;
+							}
+						}
+
+						possibleSpot.Add (nextSpot);
+						if (getFood)
+							sum += Mathf.Pow (ACOA.instance.map [xx] [yy].pheromone1, pheromone_power) + fixedPh;
+						else
+							sum += Mathf.Pow (ACOA.instance.map [xx] [yy].pheromone2, pheromone_power) + fixedPh;
+						wheel.Add (sum);
+					}
                 }
             }
         }
@@ -122,21 +143,15 @@ public class Ant : MonoBehaviour {
             currentSpot = possibleSpot[i];
 
         }
-        else if (fallbackSpots.Count > 0) {
-            Spot chosenSpot = fallbackSpots[Random.Range(0, fallbackSpots.Count)];
-
-            //prevSpot = ACOA.instance.map[x][y];
-            prevSpot = currentSpot;
-            currentSpot = chosenSpot;
-            //Debug.Log()
-        }
         else {
+			clearPath ();
             currentSpot = prevSpot;
             prevSpot = ACOA.instance.map[x][y];
         }
 
         //Debug.Log(prevSpot.transform.position + "\t" + currentSpot.transform.position);
         distance += (currentSpot.transform.position - prevSpot.transform.position).magnitude;
+		path [(int)currentSpot.transform.position.x] [(int)currentSpot.transform.position.y] = true;
 		//Debug.Log(distance);
 		direction();
 	}
